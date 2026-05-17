@@ -352,3 +352,16 @@ pre .keyword,pre .javascript .function {color:#cc99cc;}
   .article .side {display:none}
   .comment .gt-btn-public .gt-btn-text:after{content:"";}
 }
+/* Projects Section */
+.projects-section {max-width:800px;margin:80px auto 0;padding:40px 30px;text-align:center;}
+.projects-title {font-size:24px;color:#333;margin-bottom:30px;letter-spacing:2px;}
+.projects-title:after {content:'';display:block;width:40px;height:2px;background:#8b4513;margin:12px auto 0;}
+.projects-list {display:flex;flex-direction:column;gap:20px;align-items:center;}
+.project-card {display:block;width:100%;max-width:600px;padding:24px 28px;border:1px solid #eaeaea;border-radius:8px;text-align:left;transition:all 0.3s ease;background:#fff;}
+.project-card:hover {border-color:#8b4513;box-shadow:0 4px 20px rgba(0,0,0,0.08);transform:translateY(-2px);}
+.project-name {font-size:18px;font-weight:600;color:#333;margin-bottom:8px;}
+.project-desc {font-size:14px;color:#666;line-height:1.6;margin-bottom:10px;}
+.project-link {font-size:12px;color:#8b4513;opacity:0.7;}
+.contact-info {margin-top:40px;font-size:14px;color:#999;}
+.contact-info a {color:#8b4513;border-bottom:1px dotted #8b4513;}
+.contact-info a:hover {border-bottom-style:solid;}
