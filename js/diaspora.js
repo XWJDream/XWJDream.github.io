@@ -143,7 +143,7 @@ var Diaspora = {
         var sourceSrc= $("#audio source").eq(0).attr('src')
         if (sourceSrc == '' && p[0].src == ''){
             audiolist = $('#audio-list li');
-            mp3 = audiolist.eq([Math.floor(Math.random() * audiolist.size())])
+            mp3 = audiolist.eq([Math.floor(Math.random() * audiolist.length)])
             p[0].src = mp3.data('url')
         }
 
