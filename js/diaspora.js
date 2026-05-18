@@ -682,8 +682,6 @@ $(function() {
     var initAnimations = function() {
         var $posts = $('#primary .post');
         var $projects = $('.project-card');
-        var $footerLinks = $('.footerlinks');
-        var $projectsSection = $('.projects-section');
 
         // Mark elements as ready to animate
         $posts.each(function(i) {
@@ -692,8 +690,6 @@ $(function() {
         $projects.each(function(i) {
             $(this).addClass('anim-ready anim-scale anim-delay-' + Math.min(i + 1, 5));
         });
-        if ($footerLinks.length) $footerLinks.addClass('anim-ready anim-fade');
-        if ($projectsSection.length) $projectsSection.addClass('anim-ready anim-fade-up');
 
         // Use Intersection Observer if available
         if ('IntersectionObserver' in window) {
@@ -704,7 +700,7 @@ $(function() {
                         observer.unobserve(entry.target);
                     }
                 });
-            }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+            }, { threshold: 0.05 });
 
             $('.anim-ready').each(function() {
                 observer.observe(this);

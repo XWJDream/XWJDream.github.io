@@ -499,10 +499,6 @@ pre .keyword,pre .javascript .function {color:#cc99cc;}
 .anim-delay-4 {animation-delay:.4s;}
 .anim-delay-5 {animation-delay:.5s;}
 
-/* Cover area entrance */
-#post0 {opacity:0; animation:fadeInUp 1s .5s cubic-bezier(.25,.46,.45,.94) forwards;}
-#vibrant div {animation:fadeIn 1.5s .3s ease forwards; opacity:0;}
-
 /* Post card hover lift */
 .post {transition:transform .4s cubic-bezier(.25,.46,.45,.94),box-shadow .4s ease;}
 .post:hover {transform:translateY(-4px);}
