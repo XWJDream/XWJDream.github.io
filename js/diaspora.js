@@ -106,7 +106,9 @@ var Diaspora = {
                 }
             }, 0)
             var math = document.getElementById("single")
-            MathJax.Hub.Queue(["Typeset", MathJax.Hub, math])
+            if (typeof MathJax !== 'undefined' && MathJax.Hub) {
+                MathJax.Hub.Queue(["Typeset", MathJax.Hub, math])
+            }
         })
     },
     preview: function() {
@@ -215,6 +217,11 @@ $(function() {
             // why setTimeout ?
             setTimeout(function() { cover.t.load() }, 0)
         }
+        setTimeout(function() {
+            if ($('html').hasClass('loading') || $('body').hasClass('loading')) {
+                $('html, body').removeClass('loading')
+            }
+        }, 5000)
         cover.t.on('load', function() {
             ;(cover.f = function() {
                 var _w = $('#mark').width(), _h = $('#mark').height(), x, y, i, e;
@@ -244,16 +251,18 @@ $(function() {
                 $('html, body').removeClass('loading')
             }, 1000)
             $('#mark').parallax()
-            var vibrant = new Vibrant(cover.t[0]);
-            var swatches = vibrant.swatches()
-            if (swatches['DarkVibrant']) {
-                $('#vibrant polygon').css('fill', swatches['DarkVibrant'].getHex())
-                $('#vibrant div').css('background-color', swatches['DarkVibrant'].getHex())
-            }
-            if (swatches['Vibrant']) {
-                $('.icon-menu').css('color', swatches['Vibrant'].getHex())
-				$('.icon-search').css('color', swatches['Vibrant'].getHex())
-            }
+            try {
+                var vibrant = new Vibrant(cover.t[0]);
+                var swatches = vibrant.swatches()
+                if (swatches['DarkVibrant']) {
+                    $('#vibrant polygon').css('fill', swatches['DarkVibrant'].getHex())
+                    $('#vibrant div').css('background-color', swatches['DarkVibrant'].getHex())
+                }
+                if (swatches['Vibrant']) {
+                    $('.icon-menu').css('color', swatches['Vibrant'].getHex())
+                    $('.icon-search').css('color', swatches['Vibrant'].getHex())
+                }
+            } catch(e) {}
         })
         if (!cover.t.attr('src')) {
             alert('Please set the post thumbnail')
