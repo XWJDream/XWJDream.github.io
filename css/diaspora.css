@@ -459,3 +459,50 @@ pre .keyword,pre .javascript .function {color:#cc99cc;}
   .search-header input {font-size:14px;}
   .back-to-top {right:16px;bottom:16px;width:36px;height:36px;}
 }
+
+/* Page Transition Animations */
+@keyframes fadeInUp {
+  from { opacity:0; transform:translateY(40px); }
+  to { opacity:1; transform:translateY(0); }
+}
+@keyframes fadeInLeft {
+  from { opacity:0; transform:translateX(-40px); }
+  to { opacity:1; transform:translateX(0); }
+}
+@keyframes fadeInRight {
+  from { opacity:0; transform:translateX(40px); }
+  to { opacity:1; transform:translateX(0); }
+}
+@keyframes fadeIn {
+  from { opacity:0; }
+  to { opacity:1; }
+}
+@keyframes scaleIn {
+  from { opacity:0; transform:scale(.92); }
+  to { opacity:1; transform:scale(1); }
+}
+
+/* Elements waiting to animate */
+.anim-ready {opacity:0;}
+
+/* Animated elements */
+.anim-fade-up {animation:fadeInUp .7s cubic-bezier(.25,.46,.45,.94) forwards;}
+.anim-fade-left {animation:fadeInLeft .7s cubic-bezier(.25,.46,.45,.94) forwards;}
+.anim-fade-right {animation:fadeInRight .7s cubic-bezier(.25,.46,.45,.94) forwards;}
+.anim-fade {animation:fadeIn .6s ease forwards;}
+.anim-scale {animation:scaleIn .6s cubic-bezier(.25,.46,.45,.94) forwards;}
+
+/* Stagger delays */
+.anim-delay-1 {animation-delay:.1s;}
+.anim-delay-2 {animation-delay:.2s;}
+.anim-delay-3 {animation-delay:.3s;}
+.anim-delay-4 {animation-delay:.4s;}
+.anim-delay-5 {animation-delay:.5s;}
+
+/* Cover area entrance */
+#post0 {opacity:0; animation:fadeInUp 1s .5s cubic-bezier(.25,.46,.45,.94) forwards;}
+#vibrant div {animation:fadeIn 1.5s .3s ease forwards; opacity:0;}
+
+/* Post card hover lift */
+.post {transition:transform .4s cubic-bezier(.25,.46,.45,.94),box-shadow .4s ease;}
+.post:hover {transform:translateY(-4px);}

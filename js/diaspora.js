@@ -498,7 +498,12 @@ $(function() {
                         $('#pager').remove()
                     }
                     var tempScrollTop = $(window).scrollTop();
-                    $('#primary').append($(data).find('.post'))
+                    var $newPosts = $(data).find('.post').each(function(i) {
+                        $(this).addClass('anim-ready anim-fade-up anim-delay-' + Math.min(i + 1, 3));
+                    });
+                    $('#primary').append($newPosts);
+                    // Trigger animation for new posts
+                    setTimeout(function() { $newPosts.removeClass('anim-ready'); }, 50);
                     $(window).scrollTop(tempScrollTop + 100);
                     Diaspora.loaded()
                     $('html,body').animate({ scrollTop: tempScrollTop + 400 }, 500);
@@ -672,6 +677,44 @@ $(function() {
     $backToTop.on('click', function() {
         $('html, body').animate({scrollTop: 0}, 400);
     });
+
+    // Scroll-triggered entrance animations
+    var initAnimations = function() {
+        var $posts = $('#primary .post');
+        var $projects = $('.project-card');
+        var $footerLinks = $('.footerlinks');
+        var $projectsSection = $('.projects-section');
+
+        // Mark elements as ready to animate
+        $posts.each(function(i) {
+            $(this).addClass('anim-ready anim-fade-up anim-delay-' + Math.min(i + 1, 5));
+        });
+        $projects.each(function(i) {
+            $(this).addClass('anim-ready anim-scale anim-delay-' + Math.min(i + 1, 5));
+        });
+        if ($footerLinks.length) $footerLinks.addClass('anim-ready anim-fade');
+        if ($projectsSection.length) $projectsSection.addClass('anim-ready anim-fade-up');
+
+        // Use Intersection Observer if available
+        if ('IntersectionObserver' in window) {
+            var observer = new IntersectionObserver(function(entries) {
+                entries.forEach(function(entry) {
+                    if (entry.isIntersecting) {
+                        $(entry.target).removeClass('anim-ready');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+            $('.anim-ready').each(function() {
+                observer.observe(this);
+            });
+        } else {
+            // Fallback: just show everything
+            $('.anim-ready').removeClass('anim-ready');
+        }
+    };
+    initAnimations();
 
     console.log("%c Github %c","background:#24272A; color:#ffffff","","https://github.com/Fechin/hexo-theme-diaspora")
 })

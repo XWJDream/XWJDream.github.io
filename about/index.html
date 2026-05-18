@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>关于 - Dream</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="keywords" content="XWJDream,关于,About">
+    <meta name="author" content="XWJDream">
+    <link rel="icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/diaspora.css">
+    <style>
+        .about-hero {
+            min-height: 50vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .about-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+            animation: heroFloat 20s linear infinite;
+        }
+        @keyframes heroFloat {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(30px, 30px); }
+        }
+        .about-hero-content {
+            text-align: center;
+            color: #fff;
+            z-index: 1;
+            padding: 40px 20px;
+        }
+        .about-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid rgba(255,255,255,.3);
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,.1);
+            font-size: 40px;
+            color: #fff;
+        }
+        .about-hero h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .about-hero p {
+            font-size: 15px;
+            color: rgba(255,255,255,.7);
+            max-width: 500px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        .about-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 20px 80px;
+        }
+        .about-section {
+            margin-bottom: 50px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: aboutFadeIn .6s ease forwards;
+        }
+        .about-section:nth-child(2) { animation-delay: .15s; }
+        .about-section:nth-child(3) { animation-delay: .3s; }
+        .about-section:nth-child(4) { animation-delay: .45s; }
+        @keyframes aboutFadeIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .about-section h2 {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .about-section h2 .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #8b4513;
+            display: inline-block;
+        }
+        .about-intro {
+            font-size: 15px;
+            color: #555;
+            line-height: 1.9;
+        }
+        .about-intro p {
+            margin-bottom: 12px;
+        }
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 16px;
+        }
+        .skill-card {
+            padding: 18px;
+            background: #fafafa;
+            border-radius: 8px;
+            border: 1px solid #f0f0f0;
+            transition: all .3s ease;
+        }
+        .skill-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0,0,0,.08);
+            border-color: #e0e0e0;
+        }
+        .skill-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        .skill-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        .skill-desc {
+            font-size: 12px;
+            color: #999;
+        }
+        .contact-list {
+            list-style: none;
+            padding: 0;
+        }
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        .contact-item:last-child { border-bottom: none; }
+        .contact-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        .contact-label {
+            font-size: 13px;
+            color: #999;
+        }
+        .contact-value {
+            font-size: 15px;
+            color: #333;
+        }
+        .contact-value a {
+            color: #333;
+            text-decoration: none;
+            transition: color .2s;
+        }
+        .contact-value a:hover {
+            color: #8b4513;
+        }
+        .about-footer {
+            text-align: center;
+            padding: 30px 20px;
+            border-top: 1px solid #f0f0f0;
+        }
+        .about-footer a {
+            color: #8b4513;
+            text-decoration: none;
+            font-size: 14px;
+            transition: opacity .2s;
+        }
+        .about-footer a:hover { opacity: .7; }
+        .about-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 50;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background .3s;
+        }
+        .about-header.scrolled {
+            background: rgba(255,255,255,.95);
+            box-shadow: 0 1px 8px rgba(0,0,0,.06);
+        }
+        .about-header .logo {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            text-decoration: none;
+            transition: color .3s;
+        }
+        .about-header.scrolled .logo { color: #333; }
+        .about-header .back {
+            font-size: 14px;
+            color: rgba(255,255,255,.8);
+            text-decoration: none;
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,.3);
+            transition: all .3s;
+        }
+        .about-header.scrolled .back {
+            color: #666;
+            border-color: #ddd;
+        }
+        .about-header .back:hover {
+            background: rgba(255,255,255,.15);
+        }
+        .about-header.scrolled .back:hover {
+            background: #f5f5f5;
+        }
+        @media screen and (max-width: 600px) {
+            .about-hero { min-height: 45vh; }
+            .about-hero h1 { font-size: 22px; }
+            .about-container { padding: 40px 16px 60px; }
+            .skills-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .skill-card { padding: 14px; }
+        }
+        @media screen and (max-width: 400px) {
+            .skills-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body class="loading">
+    <div class="about-header" id="aboutHeader">
+        <a class="logo" href="/">Dream</a>
+        <a class="back" href="/">← 返回首页</a>
+    </div>
+
+    <div class="about-hero">
+        <div class="about-hero-content">
+            <div class="about-avatar">X</div>
+            <h1>XWJDream</h1>
+            <p>热爱技术，喜欢折腾，用代码构建有趣的东西</p>
+        </div>
+    </div>
+
+    <div class="about-container">
+        <div class="about-section">
+            <h2><span class="dot"></span>关于我</h2>
+            <div class="about-intro">
+                <p>Hi，我是 XWJDream，一个对技术充满热情的开发者。</p>
+                <p>喜欢探索新技术，享受从零到一构建项目的过程。平时主要关注 Web 开发、前端工程化、以及各种有趣的开源项目。</p>
+                <p>这个博客是我的个人空间，用来记录学习笔记、技术分享和一些生活感悟。希望能在这里留下一些有价值的思考。</p>
+            </div>
+        </div>
+
+        <div class="about-section">
+            <h2><span class="dot"></span>技能栈</h2>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <div class="skill-icon">⚡</div>
+                    <div class="skill-name">JavaScript</div>
+                    <div class="skill-desc">前端核心语言</div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon">🎨</div>
+                    <div class="skill-name">HTML / CSS</div>
+                    <div class="skill-desc">页面结构与样式</div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon">⚛️</div>
+                    <div class="skill-name">Vue / React</div>
+                    <div class="skill-desc">前端框架</div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon">🟢</div>
+                    <div class="skill-name">Node.js</div>
+                    <div class="skill-desc">服务端开发</div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon">🐍</div>
+                    <div class="skill-name">Python</div>
+                    <div class="skill-desc">脚本与自动化</div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon">🔧</div>
+                    <div class="skill-name">Git / GitHub</div>
+                    <div class="skill-desc">版本控制与协作</div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon">🐳</div>
+                    <div class="skill-name">Docker</div>
+                    <div class="skill-desc">容器化部署</div>
+                </div>
+                <div class="skill-card">
+                    <div class="skill-icon">🗃️</div>
+                    <div class="skill-name">MySQL / Redis</div>
+                    <div class="skill-desc">数据库</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="about-section">
+            <h2><span class="dot"></span>联系方式</h2>
+            <ul class="contact-list">
+                <li class="contact-item">
+                    <div class="contact-icon">📧</div>
+                    <div>
+                        <div class="contact-label">Email</div>
+                        <div class="contact-value"><a href="mailto:x15256722895@163.com">x15256722895@163.com</a></div>
+                    </div>
+                </li>
+                <li class="contact-item">
+                    <div class="contact-icon">🐙</div>
+                    <div>
+                        <div class="contact-label">GitHub</div>
+                        <div class="contact-value"><a href="https://github.com/XWJDream" target="_blank" rel="noopener">github.com/XWJDream</a></div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="about-section">
+            <h2><span class="dot"></span>关于本站</h2>
+            <div class="about-intro">
+                <p>本博客基于 <a href="https://hexo.io/" target="_blank" rel="noopener" style="color:#8b4513;">Hexo</a> 构建，使用 <a href="https://github.com/Fechin/hexo-theme-diaspora" target="_blank" rel="noopener" style="color:#8b4513;">Diaspora</a> 主题。</p>
+                <p>托管于 <a href="https://pages.github.com/" target="_blank" rel="noopener" style="color:#8b4513;">GitHub Pages</a>，持续更新中。</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="about-footer">
+        <a href="/">← 返回首页</a>
+    </div>
+
+    <script>
+        // Header scroll effect
+        var header = document.getElementById('aboutHeader');
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 100) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+    </script>
+</body>
+</html>
