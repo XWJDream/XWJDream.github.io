@@ -1,0 +1,12 @@
+[
+  {
+    "title": "Welcome to my dream",
+    "url": "/2022/01/21/hello-world/",
+    "content": "Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick Start Create a new post More info: Writing Run server More info: Server Generate static files More info: Generating Deploy to remote sites More info: Deployment"
+  },
+  {
+    "title": "Small Dream",
+    "url": "/2022/01/25/small%20dream/",
+    "content": ""
+  }
+]

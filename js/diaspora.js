@@ -316,95 +316,114 @@ $(function() {
         }
     })
 	
-	//搜搜
-	var searchFunc = function(path, search_id, content_id) {
-		'use strict'; //使用严格模式
-		$.ajax({
-			url: path,
-			dataType: "xml",
-			success: function( xmlResponse ) {
-				// 从xml中获取相应的标题等数据
-				var datas = $( "entry", xmlResponse ).map(function() {
-					return {
-						title: $( "title", this ).text(),
-						content: $("content",this).text(),
-						url: $( "url" , this).text()
-					};
-				}).get();
-				//ID选择器
-				var $input = document.getElementById(search_id);
-				var $resultContent = document.getElementById(content_id);
-				$input.addEventListener('input', function(){
-					var str='<ul class=\"search-result-list\">';                
-					var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
-					$resultContent.innerHTML = "";
-					if (this.value.trim().length <= 0) {
-						return;
-					}
-					// 本地搜索主要部分
-					datas.forEach(function(data) {
-						var isMatch = true;
-						var content_index = [];
-						var data_title = data.title.trim().toLowerCase();
-						var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
-						var data_url = data.url;
-						var index_title = -1;
-						var index_content = -1;
-						var first_occur = -1;
-						// 只匹配非空文章
-						if(data_title != '' && data_content != '') {
-							keywords.forEach(function(keyword, i) {
-								index_title = data_title.indexOf(keyword);
-								index_content = data_content.indexOf(keyword);
-								if( index_title < 0 && index_content < 0 ){
-									isMatch = false;
-								} else {
-									if (index_content < 0) {
-										index_content = 0;
-									}
-									if (i == 0) {
-										first_occur = index_content;
-									}
-								}
-							});
-						}
-						// 返回搜索结果
-						if (isMatch) {
-						//结果标签
-							str += "<li><a href='"+ data_url +"' class='search-result-title' target='_blank'>"+ data_title +"</a>";
-							var content = data.content.trim().replace(/<[^>]+>/g,"");
-							if (first_occur >= 0) {
-								// 拿出含有搜索字的部分
-								var start = first_occur - 6;
-								var end = first_occur + 6;
-								if(start < 0){
-									start = 0;
-								}
-								if(start == 0){
-									end = 10;
-								}
-								if(end > content.length){
-									end = content.length;
-								}
-								var match_content = content.substr(start, end); 
-								// 列出搜索关键字，定义class加高亮
-								keywords.forEach(function(keyword){
-									var regS = new RegExp(keyword, "gi");
-									match_content = match_content.replace(regS, "<em class=\"search-keyword\">"+keyword+"</em>");
-								})
-								str += "<p class=\"search-result\">" + match_content +"...</p>"
-							}
-						}
-					})
-					$resultContent.innerHTML = str;
-				})
-			}
-		})
+	// 搜索（JSON 实时索引）
+	var searchData = null;
+	var searchOverlay = null;
+
+	var loadSearchData = function(callback) {
+		if (searchData) { callback(searchData); return; }
+		$.getJSON('/search.json', function(data) {
+			searchData = data;
+			callback(data);
+		});
 	};
-	var path = "/search.xml";
-	if(document.getElementById('local-search-input') !== null){
-		searchFunc(path, 'local-search-input', 'local-search-result');
-	}
+
+	var highlightText = function(text, keywords) {
+		var result = text;
+		keywords.forEach(function(kw) {
+			if (!kw) return;
+			var reg = new RegExp('(' + kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+			result = result.replace(reg, '<em>$1</em>');
+		});
+		return result;
+	};
+
+	var renderSearchResults = function(keywords, container) {
+		var $result = $(container);
+		var kw = keywords.filter(function(k) { return k.length > 0; });
+		if (kw.length === 0) { $result.html('<div class="search-hint">输入关键词搜索文章</div>'); return; }
+		var html = '<ul>';
+		var found = 0;
+		searchData.forEach(function(item) {
+			var titleLower = item.title.toLowerCase();
+			var contentLower = item.content.replace(/<[^>]+>/g, '').toLowerCase();
+			var matched = kw.every(function(k) { return titleLower.indexOf(k) >= 0 || contentLower.indexOf(k) >= 0; });
+			if (!matched) return;
+			found++;
+			var displayTitle = highlightText(item.title, kw);
+			var snippet = '';
+			var contentText = item.content.replace(/<[^>]+>/g, '');
+			if (contentText.length > 0) {
+				var firstIdx = -1;
+				for (var i = 0; i < kw.length; i++) {
+					var idx = contentLower.indexOf(kw[i]);
+					if (idx >= 0) { firstIdx = idx; break; }
+				}
+				if (firstIdx >= 0) {
+					var s = Math.max(0, firstIdx - 20);
+					var e = Math.min(contentText.length, firstIdx + 60);
+					snippet = (s > 0 ? '...' : '') + contentText.substring(s, e) + (e < contentText.length ? '...' : '');
+					snippet = highlightText(snippet, kw);
+				}
+			}
+			html += '<li data-url="' + item.url + '">';
+			html += '<span class="search-result-title">' + displayTitle + '</span>';
+			if (snippet) html += '<span class="search-result-snippet">' + snippet + '</span>';
+			html += '</li>';
+		});
+		html += '</ul>';
+		if (found === 0) html = '<div class="search-empty">未找到相关文章</div>';
+		$result.html(html);
+	};
+
+	var openSearch = function() {
+		if (!searchOverlay) {
+			searchOverlay = $(
+				'<div class="search-overlay">' +
+				'<div class="search-box">' +
+				'<div class="search-header">' +
+				'<span class="iconfont icon-search"></span>' +
+				'<input type="text" id="overlay-search-input" placeholder="搜索文章标题或内容..." autocomplete="off">' +
+				'<span class="search-close">ESC</span>' +
+				'</div>' +
+				'<div class="search-results" id="overlay-search-result">' +
+				'<div class="search-hint">输入关键词搜索文章</div>' +
+				'</div>' +
+				'</div>' +
+				'</div>'
+			);
+			$('body').append(searchOverlay);
+			searchOverlay.on('click', function(e) {
+				if ($(e.target).is('.search-overlay')) closeSearch();
+			});
+			searchOverlay.find('.search-close').on('click', closeSearch);
+			searchOverlay.find('#overlay-search-input').on('input', function() {
+				var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+				renderSearchResults(keywords, '#overlay-search-result');
+			});
+			searchOverlay.find('#overlay-search-result').on('click', 'li', function() {
+				var url = $(this).data('url');
+				if (url) window.location.href = url;
+			});
+		}
+		searchOverlay.addClass('active');
+		setTimeout(function() { searchOverlay.find('#overlay-search-input').val('').focus(); }, 100);
+		loadSearchData(function() {
+			$('#overlay-search-result').html('<div class="search-hint">输入关键词搜索文章</div>');
+		});
+	};
+
+	var closeSearch = function() {
+		if (searchOverlay) searchOverlay.removeClass('active');
+	};
+
+	$(document).on('keydown', function(e) {
+		if (e.key === 'Escape') closeSearch();
+		if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+			e.preventDefault();
+			openSearch();
+		}
+	});
 	
 	
     var typed = null;
@@ -448,15 +467,11 @@ $(function() {
 				}	
                 return false;
                 break;
-			//search	
+			//search
 			case (tag.indexOf('switchsearch') != -1):
                 $('body').removeClass('mu')
 				if(typed !== null){typed.destroy(); typed = null;}
-                setTimeout(function() {
-                    Diaspora.HS($(e.target), 'push')
-                    $('.toc').fadeIn(1000);
-					searchFunc(path, 'local-search-input', 'local-search-result');
-                }, 300)
+				openSearch();
                 return false;
                 break;	
             // next page
@@ -642,7 +657,22 @@ $(function() {
     if (comment.data('ae') == true){
         comment.click();
     }
-		
+
+    // 回到顶部按钮
+    var $backToTop = $('<button class="back-to-top" title="回到顶部"></button>');
+    $backToTop.html('<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>');
+    $('body').append($backToTop);
+    $(window).on('scroll', function() {
+        if ($(this).scrollTop() > 300) {
+            $backToTop.addClass('show');
+        } else {
+            $backToTop.removeClass('show');
+        }
+    });
+    $backToTop.on('click', function() {
+        $('html, body').animate({scrollTop: 0}, 400);
+    });
+
     console.log("%c Github %c","background:#24272A; color:#ffffff","","https://github.com/Fechin/hexo-theme-diaspora")
 })
 
